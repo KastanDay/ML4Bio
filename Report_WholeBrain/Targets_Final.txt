@@ -1,0 +1,21 @@
+Sample	NumReads	Treatment	Sample type
+31M	31514362	Flu X31	Microglia
+42M	29053384	Flu X31	Microglia
+50M	28818645	Flu X31	Microglia
+51M	28359760	Flu X31	Microglia
+59M	37243412	Flu X31	Microglia
+9M	33534949	Flu X31	Microglia
+45M	29682002	Vehicle	Microglia
+46M	29018440	Vehicle	Microglia
+53M	27335927	Vehicle	Microglia
+8M	32699071	Vehicle	Microglia
+18WB	21375593	Flu X31	Whole brain
+2WB	23439509	Flu X31	Whole brain
+38WB	19940251	Flu X31	Whole brain
+43WB	20606070	Flu X31	Whole brain
+52WB	22008567	Flu X31	Whole brain
+60WB	21781129	Flu X31	Whole brain
+21WB	24206984	Vehicle	Whole brain
+35WB	17949691	Vehicle	Whole brain
+36WB	20516029	Vehicle	Whole brain
+7WB	20084901	Vehicle	Whole brain

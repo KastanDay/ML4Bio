@@ -1,0 +1,879 @@
+---
+title: "Antonson RNA-Seq Preliminary Report, WholeBrain"
+author: "Jessica Holmes and Jenny Drnevich, HPCBio, University of Illinois"
+date: "`r format(Sys.time(), '%B %d,  %Y')`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    self_contained: yes
+  word_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+params:
+  filebasename: Report_Antonson_2022Mar
+  anno: 109
+  anno_url: https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Mus_musculus/109/
+  box_url: https://uofi.box.com/s/6ncwee31vmjs7huh6nfxlu9to3e261zz
+  fastqc_ver: 0.11.8
+  fc_ver: 2.0.0
+  ftp_url: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/
+  genome: GRCm39 (Mouse) ; A/X-31(H3N2)
+  genome_host: NCBI
+  genome_host_url: https://www.ncbi.nlm.nih.gov/genome/?term=mus+musculus ; https://www.ncbi.nlm.nih.gov/nuccore/?term=txid132504[Organism:noexp
+  genome_file: GCF_000001635.27_GRCm39_genomic.fna.gz ; influenza_A_X-31_H3N2_genes.fa 
+  gtf_file: GCF_000001635.27_GRCm39_genomic.gff.gz ; influenza_A_X-31_H3N2.gff3
+  host: NCBI
+  multiqc_ver: 1.9
+  multiqc_report: Project_WB_RNASeq_multiqc_report.htm
+  salmon_ver: 1.4.0
+  species: Mus musculus ; H3N2
+  star_ver: 2.7.10a
+  transcriptome: 109
+  transcriptome_file: GCF_000001635.27_GRCm39_rna.fna.gz ; influenza_A_X-31_H3N2_rna.fa
+  trim_ver: 0.38
+---
+
+```{r setup, echo = FALSE, include=FALSE, warning=FALSE, message = FALSE, results='hide'}
+#change the path below to your current directory to run the file
+#knitr::opts_knit$set(root.dir ="G:/My Drive/HPCBio/RNA-Seq/projects/ernelson/2019Feb-RNASeq/") R markdown and all the files are in Final_Report, so no need to set working directory. 
+knitr::opts_chunk$set(cache=TRUE, cache.lazy = FALSE)
+# knitr::knit_hooks$set(inline = function(x) {
+#   if(is.numeric(x)) scales::scales::comma(x)
+#   else x
+# })
+library(kableExtra)
+
+```
+
+```{r main codes, echo=FALSE, include=FALSE, warning=FALSE, message = FALSE, results='hide', cache=TRUE}
+library(ggplot2)
+library(dplyr)
+library(edgeR)
+library(gplots)
+library(rtracklayer)
+library(Glimma)
+library(tximport)
+library(org.Mm.eg.db)
+library(WGCNA)
+library(EDASeq)
+library(RUVSeq)
+
+
+#Read in sample information
+
+targets <- readTargets("Targets_Final.txt")
+
+
+#cut down to WholeBrain only
+
+targets <- targets[targets$Sample.type == "Whole brain",]
+
+
+#Make better Trt and Labels
+
+targets$Trt <- substring(targets$Treatment, 1, 3) %>% factor(levels = c("Veh","Flu"))
+# targets$Trt <- "Flu"
+# targets$Trt[sample(1:10, 4)] <- "Veh"
+# targets$Trt <- factor(targets$Trt, levels = c("Veh","Flu"))
+targets$Label <- paste(targets$Trt, targets$Sample, sep = "_")
+
+
+
+#Add colors and sort
+targets$col <- dittoSeq::dittoColors()[as.numeric(targets$Trt)]
+targets <- targets[order(targets$Trt),]
+
+
+
+#load in transcript-level data
+
+load("SalmonSummarizedOutput.RData")
+
+#If they have X added because they started with a number - remove them
+rownames(meta_info) <- gsub("X", "",rownames(meta_info))
+
+
+#match the order
+temp <- match(as.character(targets$Sample), rownames(meta_info))
+meta_info <- meta_info[temp,]
+tx.all$abundance <- tx.all$abundance[,temp]
+tx.all$counts <- tx.all$counts[,temp]
+tx.all$length <- tx.all$length[,temp]
+
+
+#replace the old name 
+rownames(meta_info) <- targets$Label
+colnames(tx.all$abundance) <- targets$Label
+colnames(tx.all$counts) <- targets$Label
+colnames(tx.all$length) <- targets$Label
+
+
+#do read fate plot
+targets$Total <- targets$NumReads
+ReadFate <- data.frame(#QCfiltered = targets$Total - meta_info$num_processed,
+  mapped = meta_info$num_mapped) / targets$Total * 100
+
+ReadFate$Label <- factor(targets$Label, levels = unique(targets$Label))
+ReadFate$Trt <- targets$Trt
+
+
+# Load transcript - gene mappings
+all_tx_info <- read.delim("trx_EGids_combined.txt")
+
+names(all_tx_info)[3] <- c("symbol")
+
+
+#get gene-level counts
+gene.all <- summarizeToGene(tx.all, all_tx_info[,c(1,2)], countsFromAbundance = "lengthScaledTPM")
+
+
+#cut down all_tx_info to unique genes
+#use product from transcript with largest counts
+
+all_tx_info$sumCounts <- rowSums(tx.all$counts)[all_tx_info$transcript_id]
+all_tx_info$sumCounts[is.na(all_tx_info$sumCounts)] <- 0
+all_tx_info <- all_tx_info[order(all_tx_info$sumCounts, decreasing = TRUE),]
+
+temp <- all_tx_info[!duplicated(all_tx_info$gene_id),-1]
+temp <- temp[match(rownames(gene.all$counts), temp$gene_id),]
+rownames(temp) <- temp$gene_id
+temp$ENTREZID <- gsub("GeneID:","", temp$gene_id)
+
+
+#create dgelist
+d <- DGEList(gene.all$counts, samples = targets, genes = temp[,c("ENTREZID","symbol","product")])
+
+
+#Do TMM norm ----
+
+d <- calcNormFactors(d)
+
+logCPM <- cpm(d, log=T)
+
+
+
+####Filtering####
+
+min_cpm <- 1
+min_samp <- 3
+
+i.filter <- rowSums(logCPM > log2(min_cpm)) >= min_samp
+
+
+#cut down to filtered gene list
+d.filt <- d[i.filter, , keep.lib.sizes=F]
+
+#re-do TMM factors, just in case:
+d.filt <- calcNormFactors(d.filt)
+
+
+
+#do final normalization----
+#default prior.count is now 2, use that
+logCPM.filt <- cpm(d.filt, log = T, prior.count = 2)
+
+
+#Do glMDSPlot
+
+
+temp <- glMDSPlot(logCPM.filt, top = 5000, labels = d.filt$samples$Label,
+                  groups = d.filt$samples[,c("Trt", "Sample")], launch = FALSE,
+          html = "old_MDSclustering_WholeBrain", folder = "interactive_plots")
+
+plot.values <- as.data.frame(temp$points)
+colnames(plot.values) <- paste0("Dim", 1:8)
+plot.values$var.exp <- round(temp$eig*100/sum(temp$eig),1)
+plot.values$Trt <- factor(d.filt$samples$Trt)
+plot.values$Label <- factor(d.filt$samples$Label)
+
+
+
+glimmaMDS(d.filt, top = 5000, labels = d$samples$Label,
+          html = "MDSclustering_WholeBrain.html")
+
+
+#deg ----
+Group <- factor(targets$Trt, levels = unique(targets$Trt))
+design0 <- model.matrix(~ Group)
+colnames(design0)[-1] <- paste0(levels(Group)[-1], ".vs.", levels(Group)[1])
+
+
+#put normalized values in EList object type
+e <- new("EList", list(E =logCPM.filt, genes=d.filt$genes, targets=targets))
+
+#fit model ----
+fit0 <- lmFit(e, design = design0) %>% eBayes(trend = TRUE)
+
+
+# codes_sep05 <- decideTests(fit0)
+# codes_glob05 <- decideTests(fit0, method = "global")
+# codes_glob1 <- decideTests(fit0, method = "global", p.value = 0.1)
+
+
+#get results 
+res.temp <- topTable(fit0, coef = 2, n = Inf, sort.by = "none")
+
+
+#Make objects for heatmap
+
+col.pan <- colorpanel(100, "blue", "white", "red")
+heat.h1 <- t(scale(t(logCPM.filt[res.temp$P.Value < 0.05,])))
+x.cluster.h1 <- hclust(dist(heat.h1))
+
+rowCols.h1 <- cutreeStaticColor(x.cluster.h1, cutHeight = 5.1, minSize = 1 )
+
+heatVal.h1 <- data.frame(ENTREZID=gsub("GeneID:", "", rownames(heat.h1)),
+                         heat.h1,
+                         HeatmapColor=rowCols.h1)
+heatVal.h1 <- heatVal.h1[rev(x.cluster.h1$order),]
+heatVal.h1$TopToBottom <- 1:nrow(heatVal.h1)
+
+
+
+# get results
+# 
+results.out0 <- res.temp[,1:8]
+results.out0$t <- 2^abs(results.out0$logFC) * sign(results.out0$logFC)
+names(results.out0)[6] <- c("regFC")
+
+
+#merge gene position in heatmap
+results.out0  <-  results.out0 %>% left_join(heatVal.h1 %>% dplyr::select(ENTREZID, HeatmapColor, TopToBottom))
+
+
+
+
+source("getGO.R")
+source("getPath.R")
+
+#get GO terms
+tempGO <- getGO(org.Mm.eg.db, keys = results.out0$ENTREZID,keytype = "ENTREZID")
+
+results.out0 <-  left_join(results.out0, tempGO)
+
+#get KEGG pathways
+tempKEGG <- getPath(keys = results.out0$ENTREZID, updatePath = TRUE, species = "mmu")
+
+results.out <-  left_join(results.out0, tempKEGG)
+
+
+
+
+#order columns
+results.out <- results.out %>% dplyr::select(ENTREZID:product, HeatmapColor, TopToBottom, everything())
+
+write.table(results.out, file = "Antonson_WholeBrain_GeneResults_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+#write out raw counts
+
+count.out <- cbind(d$genes, kept = i.filter,d$counts)
+
+write.table(count.out, file = "Antonson_WholeBrain_Gene_level_counts_2022-05-12.txt", sep = "\t", row.names = FALSE)
+
+
+
+
+# 
+# 
+# ####make interactive results table----
+# 
+# 
+#write interactive results
+rawPcodes <- decideTests(fit0, adjust.method = "none")
+
+glMDPlot(fit0, coef = 2, counts = e$E,
+           groups = Group,
+           side.main = "symbol",
+           samples = targets$Label,
+           status = rawPcodes,
+           main = "WholeBrain, Flu vs. Veh, raw P < 0.05",
+           sample.cols = targets$col, folder = "interactive_plots/",
+           html = "old_WholeBrain_rawP05", launch = FALSE,
+         p.adj.method = "none")
+
+
+
+
+
+
+#Try RUV with increasing numbers of k to find best number ----
+
+num0.05 <- sum(res.temp$P.Value < 0.05)
+diff <- makeGroups(Group)
+
+for(k in 1:6) {
+  wobj <- RUVs(e$E, cIdx = res.temp$P.Value > 0.5, k = k, diff, isLog = TRUE)
+  #add factors to model
+  model.ruv <- cbind(design0, wobj$W)
+  fit.ruv <- lmFit(e, model.ruv) %>% eBayes( trend=TRUE)
+  anova.ruv <- topTable(fit.ruv, coef = 2, number = Inf, sort.by = "none")
+  num0.05 <- c(num0.05, sum(anova.ruv$P.Value < 0.05))
+}
+
+num0.05 <- data.frame(NumberOfFactors = 0:k, NumberSig05 = num0.05)
+num0.05$NumberOfFactors <- factor(num0.05$NumberOfFactors )
+
+
+
+k <- 4
+wobj_final <- RUVs(e$E, cIdx = res.temp$P.Value > 0.5, k = k, diff, isLog = TRUE)
+
+
+
+temp <- glMDSPlot(wobj_final$normalizedCounts, top = 5000, labels = d.filt$samples$Label, 
+                  groups = d.filt$samples[,c("Trt")],
+                  html = "old_MDSclustering_WholeBrain_RUV", folder = "interactive_plots/", launch = FALSE)
+
+plot.values4 <- as.data.frame(temp$points)
+colnames(plot.values4) <- paste0("Dim", 1:8)
+plot.values4$var.exp <- round(temp$eig*100/sum(temp$eig),1)
+plot.values4$Trt <- factor(d.filt$samples$Trt)
+plot.values4$Label <- factor(d.filt$samples$Label)
+
+
+#Fit the model
+
+
+design.ruv4 <- cbind(design0, wobj_final$W)
+fit.ruv4 <- lmFit(e, design = design.ruv4) %>% eBayes(trend = T )
+
+#get RUV results
+
+cont.matrix4 <- makeContrasts(Flu.vs.Veh,
+                              levels = design.ruv4)
+
+
+fit.ruv4b  <- eBayes(contrasts.fit(fit.ruv4, cont.matrix4), trend = TRUE)
+
+
+# 
+# 
+# 
+
+codes_fdr0.1_ruv <- decideTests(fit.ruv4b, p.value = 0.1)
+
+
+results.out <- topTable(fit.ruv4b, coef = 1, num = Inf, sort.by = "none")
+results.out$t <- 2^abs(results.out$logFC) * sign(results.out$logFC)
+names(results.out)[6] <- c("regFC")
+
+###Heatmaps----
+sig.index.int <- results.out$adj.P.Val < 0.1
+
+col.pan <- colorpanel(100, "blue", "white", "red")
+heat.h2 <- t(scale(t(wobj_final$normalizedCounts[sig.index.int,])))
+x.cluster.h2 <- hclust(dist(heat.h2))
+
+
+rowCols.h2 <- cutreeStaticColor(x.cluster.h2, cutHeight = 5.6, minSize = 1 )
+
+#output gene position in the heatmap
+heatVal.h2 <- data.frame(ENTREZID=gsub("GeneID:", "", rownames(heat.h2)), 
+                         heat.h2,
+                         HeatmapColor=rowCols.h2)
+heatVal.h2 <- heatVal.h2[rev(x.cluster.h2$order),]
+heatVal.h2$TopToBottom <- 1:nrow(heatVal.h2)
+
+#merge gene position in heatmap
+results.out  <-  results.out %>% left_join(heatVal.h2 %>% dplyr::select(ENTREZID, HeatmapColor, TopToBottom))
+
+
+#Add in GO/KEGG
+
+
+#get GO terms
+tempGO <- getGO(org.Mm.eg.db, keys = results.out$ENTREZID,keytype = "ENTREZID")
+
+results.out <-  left_join(results.out, tempGO)
+
+#get KEGG pathways
+tempKEGG <- getPath(keys = results.out$ENTREZID, updatePath = TRUE, species = "mmu")
+
+results.out <-  left_join(results.out, tempKEGG)
+
+
+
+
+#order columns
+results.out <- results.out %>% dplyr::select(ENTREZID:product, HeatmapColor, TopToBottom, everything())
+
+
+#Write out RUV values
+
+temp <- cbind(d.filt$samples[,c(4, 9, 11, 2, 3, 7, 8)], wobj_final$W)
+names(temp)[8:11] <- paste0("RUV_", 1:k)
+write.csv(temp, file = "SampleInfo_RUVvariables_WholeBrain_2022-05-12.csv", row.names = FALSE)
+
+
+#write out regular results
+
+#write un-corrected and corrected expression values
+cpm.out <- cbind(results.out[,1:3], logCPM.filt)
+RUV.out <- cbind(results.out[,1:3], wobj_final$normalizedCounts)
+
+write.table(cpm.out, file = "Antonson_WholeBrain_logCPMvalues_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+write.table(RUV.out, file = "Antonson_WholeBrain_logCPMValues_RUVcorrected_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+
+#write out full results
+
+write.table(results.out, "Antonson_WholeBrain_GeneResults_RUV_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+
+#write interactive results
+glMDPlot(fit.ruv4b, coef = 1, counts = wobj_final$normalizedCounts,
+           groups = Group,
+           side.main = "symbol",
+           samples = targets$Label,
+           status = codes_fdr0.1_ruv,
+           main = "WholeBrain, Flu vs. Veh RUV, FDR P < 0.1",
+           sample.cols = targets$col, folder = "interactive_plots/",
+           html = "old_WholeBrain_RUV_FDR0.1", launch = FALSE)
+
+
+
+#Do quick go testing for both ----
+
+up <- results.out0$ENTREZID[results.out0$P.Value < 0.05 & results.out0$logFC > 0]
+go.up <- goana(de = up, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+go.up <- go.up[go.up$DE > 1,]
+#Get gene symbols
+temp <- getGO(org.Mm.eg.db, keys = up, keytype = "ENTREZID",
+              GOALL = TRUE, summarizeBy = "go", EGorSYM = "SYM")
+#Add in DE symbols
+go.up <- tibble::rownames_to_column(go.up, "GOID") %>% left_join(temp)
+go.up <- go.up[order(go.up$P.DE),]
+write.table(go.up, file = "GO_up_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+kegg.up <- kegga(de = up, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+kegg.up <- kegg.up[kegg.up$DE > 1,]
+#Get gene symbols
+temp <- getPath(org.Mm.eg.db, keys = up, keytype = "ENTREZID",
+              updatePath = TRUE, summarizeBy = "pathway", EGorSYM = "SYM",
+              keepSpecies = TRUE, species = "mmu")
+#Add in DE symbols
+kegg.up <- tibble::rownames_to_column(kegg.up, "PATHID") %>% left_join(temp)
+kegg.up <- kegg.up[order(kegg.up$P.DE),]
+write.table(kegg.up, file = "KEGG_up_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+
+
+down <- results.out0$ENTREZID[results.out0$P.Value < 0.05 & results.out0$logFC < 0]
+go.down <- goana(de = down, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+go.down <- go.down[go.down$DE > 1,]
+#Get gene symbols
+temp <- getGO(org.Mm.eg.db, keys = down, keytype = "ENTREZID",
+              GOALL = TRUE, summarizeBy = "go", EGorSYM = "SYM")
+#Add in DE symbols
+go.down <- tibble::rownames_to_column(go.down, "GOID") %>% left_join(temp)
+go.down <- go.down[order(go.down$P.DE),]
+write.table(go.down, file = "GO_down_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+kegg.down <- kegga(de = down, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+kegg.down <- kegg.down[kegg.down$DE > 1,]
+#Get gene symbols
+temp <- getPath(org.Mm.eg.db, keys = down, keytype = "ENTREZID",
+              updatePath = TRUE, summarizeBy = "pathway", EGorSYM = "SYM",
+              keepSpecies = TRUE, species = "mmu")
+#Add in DE symbols
+kegg.down <- tibble::rownames_to_column(kegg.down, "PATHID") %>% left_join(temp)
+kegg.down <- kegg.down[order(kegg.down$P.DE),]
+write.table(kegg.down, file = "KEGG_down_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+#Do for RUV results
+
+up <- results.out0$ENTREZID[results.out0$P.Value < 0.05 & results.out0$logFC > 0]
+go.up <- goana(de = up, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+go.up <- go.up[go.up$DE > 1,]
+#Get gene symbols
+temp <- getGO(org.Mm.eg.db, keys = up, keytype = "ENTREZID",
+              GOALL = TRUE, summarizeBy = "go", EGorSYM = "SYM")
+#Add in DE symbols
+go.up <- tibble::rownames_to_column(go.up, "GOID") %>% left_join(temp)
+go.up <- go.up[order(go.up$P.DE),]
+write.table(go.up, file = "GO_up_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+kegg.up <- kegga(de = up, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+kegg.up <- kegg.up[kegg.up$DE > 1,]
+#Get gene symbols
+temp <- getPath(org.Mm.eg.db, keys = up, keytype = "ENTREZID",
+              updatePath = TRUE, summarizeBy = "pathway", EGorSYM = "SYM",
+              keepSpecies = TRUE, species = "mmu")
+#Add in DE symbols
+kegg.up <- tibble::rownames_to_column(kegg.up, "PATHID") %>% left_join(temp)
+kegg.up <- kegg.up[order(kegg.up$P.DE),]
+write.table(kegg.up, file = "KEGG_up_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+
+
+down <- results.out0$ENTREZID[results.out0$P.Value < 0.05 & results.out0$logFC < 0]
+go.down <- goana(de = down, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+go.down <- go.down[go.down$DE > 1,]
+#Get gene symbols
+temp <- getGO(org.Mm.eg.db, keys = down, keytype = "ENTREZID",
+              GOALL = TRUE, summarizeBy = "go", EGorSYM = "SYM")
+#Add in DE symbols
+go.down <- tibble::rownames_to_column(go.down, "GOID") %>% left_join(temp)
+go.down <- go.down[order(go.down$P.DE),]
+write.table(go.down, file = "GO_down_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+kegg.down <- kegga(de = down, universe = results.out0$ENTREZID, species = "Mm")
+#remove terms without at least 2 DE genes
+kegg.down <- kegg.down[kegg.down$DE > 1,]
+#Get gene symbols
+temp <- getPath(org.Mm.eg.db, keys = down, keytype = "ENTREZID",
+              updatePath = TRUE, summarizeBy = "pathway", EGorSYM = "SYM",
+              keepSpecies = TRUE, species = "mmu")
+#Add in DE symbols
+kegg.down <- tibble::rownames_to_column(kegg.down, "PATHID") %>% left_join(temp)
+kegg.down <- kegg.down[order(kegg.down$P.DE),]
+write.table(kegg.down, file = "KEGG_down_rawP05_2022-05-12.txt",
+            row.names = FALSE, sep = "\t")
+
+
+
+
+```
+
+## Location of results and codes for reproducibility
+
+All deliverables for the basic analysis are in a zipped file that can be [downloaded from box.com](`r params$box_url`). Please unzip the file after transferring to your computer (PCs: right click and select "Extract all"; Macs: double-click to extract). Folders and Files:
+
+1. **interactive_plots** folder. Contains non-stand alone interactive MDS clustering and results .html files, which must be kept with the ccs/ and js/ sub-folders to work.
+
+2. **Report_Antonson_WholeBrain_2022Mar_files** folder. Contains separate .png files of the figures in this report.
+
+3. **Antonson_WholeBrain_Gene_level_counts_2022-05-12.xlsx**. Contains gene counts (summed from length-normalized transcript counts) for all genes and a column showing which were kept after filtering.
+
+4. **Antonson_WholeBrain_GeneResults_2022-05-12.xlsx**. Contains gene-level statistical results for Flu vs. Veh; see the tab at the bottom with column explanations. 
+
+5. **Antonson_WholeBrain_GeneResults_RUV_2022-05-12.xlsx**. Contains gene-level statistical results for Flu vs. Veh from the model including RUV factors; see the tab at the bottom with column explanations. 
+
+6. **Antonson_WholeBrain_logCPMvalues_2022-05-12.xlsx**. Normalized logCPM values for kept genes for each sample; these were used as the input to both statistical models and for visualizations (MDS clustering, heatmap, top right plot of interactive results) of the plain Flu vs. Veh comparison.
+
+7. **Antonson_WholeBrain_logCPMvalues_RUVcorrected_2022-05-12.xlsx**. Normalized logCPM values that have had the effects of the RUV factors; these were used only used for visualizations (MDS clustering, heatmap, top right plot of interactive results) of the Flu vs. Veh + RUV factors comparison.
+
+8. **MDSclustering_WholeBrain.html**. Stand-alone version of the new interactive MDS clustering plot.
+
+9. **MDSclustering_WholeBrain_RUVremoved.html**. Stand-alone version of the new interactive MDS clustering plot after RUV removal.
+
+10. **Report_Antonson_Microglia_2022Mar.Rmd**. R markdown file with the R codes for the entire analysis and to make this html report.
+
+11. **Report_Antonson_Microglia_2022Mar.html**. This html report.
+
+12. **SalmonSummarizedOutput.RData**. Transcript-level counts and other output from Salmon, in RData format to be read into R using Report_Antonson_Microglia_2022Mar.Rmd.
+
+10. **SampleInfo_RUVvariables_WholeBrain_2022-05-12.csv**. Sample information including TMM normalization values and RUV factors.
+
+8. **WholeBrain_rawP05.html**. Stand-alone version of the interactive results for the plain Flu vs. Veh comparison.
+
+9. **WholeBrain_RUV_FDR0.1.html**. Stand-alone version of the interactive results for the Flu vs. Veh + RUV factors comparison.
+
+7. getGO.R, getPath.R, Targets_Final.txt, trx_EGids_combined.txt. Other input files needed to run Report_Antonson_Microglia_2022Mar.Rmd codes.
+
+
+
+## Quality Check, alignment and count generation
+
+### Quality check on the raw data
+
+We reviewed the QC report, "`r params$multiqc_report`" sent by the sequencing center that performed [FASTQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)[^fastqc] (version `r params$fastqc_ver`) on individual samples then was summarized into a single html report by using [MultiQC](http://multiqc.info/)[^multiqc] version `r params$multiqc_ver`. Average per-base read quality scores are over 30 in all samples and no adapter sequences were found indicating those reads are high in quality. Thus, we skipped the trimming step and directly proceed to transcripts mapping and quantification.
+
+### Reference sequences
+
+All reference files were downloaded from [NCBI's ftp site](`r params$ftp_url`). The *`r params$species`* transcriptome file "`r params$transcriptome_file`" from Annotation [`r params$anno`](`r params$anno_url`) from [`r params$genome_host`](`r params$genome_host_url`) was used for quasi-mapping and count generation. This transcriptome is derived from genome `r params$genome`; Since the quasi-mapping step only uses transcript sequences, the gene model file "`r params$gtf_file`" was solely used to generate transcript-gene mapping table ("trx_EGids_GRCm39_annot109.txt") for obtaining gene-level counts. [NOTE - NEED TO MODIFY THE ABOVE DESCRIPTION BECAUSE OF THE INCLUSION OF THE VIRAL SEQUENCES]
+
+
+### Alignment and gene-level quantification
+
+[Salmon](https://combine-lab.github.io/salmon/)[^salmon] version `r params$salmon_ver` was used to quasi-map reads to the transcriptome and quantify the abundance of each transcript. The transcriptome was first indexed using the decoy-aware method in Salmon with the entire genome file "`r params$genome_file`" as the decoy sequence. Then quasi-mapping was performed to map reads to transcriptome with additional arguments `--seqBias` and `--gcBias` to correct sequence-specific and GC content biases, `--numBootstraps=30` to compute bootstrap transcript abundance estimates and `--validateMappings` to help improve the accuracy of mappings. Gene-level counts were then estimated based on transcript-level counts using the ["bias corrected counts without an offset"](http://bioconductor.org/packages/release/bioc/vignettes/tximport/inst/doc/tximport.html#use-with-downstream-bioconductor-dge-packages) method from the [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html) package. This method provides more accurate gene-level counts estimates and keeps multi-mapped reads in the analysis compared to traditional alignment-based method[^tximport].
+
+Percentage of reads mapped to the transcriptome ranged from `r round(min(ReadFate$mapped),1)` to `r round(max(ReadFate$mapped),1)`% (Figure 1), which is reasonable for a eukaryotic organism. There is no obvious difference in mapping rate between treatments. The unmapped reads were discarded and the number of remaining reads (range: `r round(min(d$samples$lib.size/1e6),1)` - `r round(max(d$samples$lib.size/1e6),1)` million per sample) were kept for further analysis. 
+
+```{r Figure 1,fig.cap = "Figure 1. Percentage of reads mapped to transcriptome", echo = F, message=FALSE, fig.width = 10, fig.height = 6}
+ggplot(data=ReadFate, aes(x=Label, y=mapped, fill = Trt)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  ylab("Percentage")+
+  scale_y_continuous(breaks = seq(0,100,by = 10), limits = c(0,100))+ 
+  scale_fill_manual(values = dittoSeq::dittoColors()[1:5])
+```
+
+
+## Sample QC
+
+### Normalization 
+
+When comparing expression levels, the numbers of reads per gene need to be normalized not only because of the differences in total number of reads, but because there could be differences in RNA composition such that the total number of reads would not be expected to be the same. The TMM (trimmed mean of M values) normalization[^tmm] in the [edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html) package[^edger2] uses the assumption of *most genes do not change* to calculate a normalization factor for each sample to adjust for such biases in RNA composition. In this dataset, TMM normalization factors fluctuates between `r round(min(d$samples$norm.factors),2)` and `r round(max(d$samples$norm.factors),2)`. A TMM value below 1 means the total library size is larger than it should be, and a TMM value above 1 means the total libary size is smaller than it should be. There is no obvious difference between Veh and Flu samples.
+
+```{r Figure 2, fig.cap = "Figure 2. TMM nomalization factors to correct for RNA composition", echo = F, message=FALSE, fig.width = 10, fig.height = 6}
+
+temp <- d$samples
+temp$Label <- factor(targets$Label, levels = unique(targets$Label))
+
+ggplot(temp, aes(y = norm.factors, x = Label, fill = Trt)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  labs(x = "Sample", y = "TMM normalization factor") +
+  geom_hline(yintercept = 1, lty = 2) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  scale_fill_manual(values = dittoSeq::dittoColors()[1:5])
+```
+
+### Filtering 
+
+While the `r params$host` `r params$genome` Annotation [`r params$anno`](`r params$anno_url`) gene models have a total of `r scales::comma(nrow(d))` genes, many of these might not have detectable expression in these samples. Therefore, we set the detection threshold at `r min_cpm` cpm (counts per million) in at least `r min_samp` sample (because there was only 1 replicate of the low dose), which resulted in `r scales::comma(sum(!i.filter))` genes being filtered out, leaving `r scales::comma(sum(i.filter))` genes to be analyzed for differential expression that contain `r scales::percent(sum(d.filt$counts) / sum(d$counts), 0.01)` of the reads. After filtering, TMM normalization was performed again and normalized log2-based count per million values (logCPM) were calculated using edgeR's[^edger1] `cpm()` function with `prior.count = 2` to help stabilize fold-changes of extremely low expression genes.
+
+
+### Clustering
+
+Multidimensional scaling in the [limma](https://bioconductor.org/packages/release/bioc/html/limma.html)[^limma] package was used as a sample QC step to check for outliers or batch effects. The normalized logCPM values of the top most 5,000 variable genes were chosen to construct the multidimensional scaling plot. Dimension 1 accounts for `r plot.values$var.exp[1]`% of the expression variation and Dimension 2 explains `r plot.values$var.exp[2]`% of the expression variation. However, the treatment replicates do not cluster tightly together. A stand-alone interactive version of the MDS clustering plot is in file "MDSclustering_WholeBrain.html".
+
+
+
+
+```{r Figure 3, fig.cap = "Figure 3. Multidimensional Scaling on the top 5,000 most variable genes. Dimension 1 vs. 2", echo = F, message=FALSE, fig.width = 7, fig.height = 6}
+ggplot(plot.values, aes(Dim1, Dim2, color = Trt))+
+  geom_point(aes(fill = Trt),  size = 3)+theme_bw()+
+  xlab(paste0("Dimension 1 ","(",plot.values$var.exp[1],"%)")) +
+  ylab(paste0("Dimension 2 ","(",plot.values$var.exp[2],"%)")) +
+  geom_text(aes(label = Trt),hjust=0.5, vjust=-0.6) + 
+  scale_color_manual(values = dittoSeq::dittoColors()[1:4])
+```
+
+## Differential gene expression analysis 
+
+Differential gene expression (DE) analysis was performed using the limma-trend method[^trend1] using a model of ~ treatment. The pairwise comparison between Flu and Vehicle as the control was made and a False Discovery Rate method[^fdr] (FDR) performed. However, the lowest FDR p-value for any gene was `r min(results.out0$adj.P.Val)`. This does not automatically mean that no genes were differentially expressed, just the number is not substantially larger than the number of false-positives that are theoretically expected. Instead, we can look at the genes with the lowest raw p-values as those with the "most" evidence of differential expression. Using a raw p-value threshold of 0.05, there are `r sum(rawPcodes[,2] == 1)` genes with higher expression in Flu vs. Veh and `r sum(rawPcodes[,2] == -1)` genes with lower expression in Flu vs. Veh. These genes are visualized in a heatmap (Figure 4). 
+
+
+
+```{r Figure 4, fig.cap = "Figure 4. Heatmap of 321 genes with Flu vs. Veh raw p-value < 0.05", echo = F, message=FALSE, fig.width = 10, fig.height = 10, cache = TRUE}
+
+heatmap.2(heat.h1, col=col.pan, Rowv=as.dendrogram(x.cluster.h1),Colv=FALSE, scale="none",
+          trace="none", dendrogram="row", cexRow=0.9, cexCol=1.5, labRow = "",
+          keysize = 0.2,lwid = c(1.4,4), lhei = c(1,4), key.par=list(mar = c(4,2,2,1)),
+          margins = c(9,2),density.info = "none", key.xlab = "SD from mean",
+          colsep =c(4), sepcolor="black",
+          sepwidth=c(0.05,0.05), 
+          #RowSideColors = rowCols.h1
+          )
+
+
+
+```
+
+
+### Interactive results
+
+Below is one example of the interactive results for the Flu vs. Veh pairwise comparison. The top left shows each gene as a point, with the average expression value on the x-axis and the log2(fold-change) on the y-axis. Genes with raw p-value < 0.05 are highlighted in red (up-regulated; status = 1) or blue (down-regulated; status = -1). Mousing over any point will pop up a box with information and clicking on a point will plot the individual sample values on the top right. At the bottom is a searchable/sortable table of the genes. Clicking on any gene in the table will highlight it in both top plots. A stand-alone interactive .html file is also in the main output directory. There is also non stand-alone .html files of similar interactive results available in the "interactive_plots" directory. This is an older version that are better in a few ways (quicker switching to top right plot and auto-scaling its y-axis) but do not contain all of the functionality of the newer interactive plots. In the old version the **AdjPValue** column actually gives the raw p-values whereas both raw and FDR corrected p-values are in the new versions. 
+
+In the plot below, try:
+
++ Clicking points in the summary plot or rows in the table to plot the gene expression of the selection.
+    + Clicking genes in the table after selecting individual points will remove the previous selection.
++ Searching for individual genes using the search box. The search results are displayed in the table.
+    + If genes are currently selected, the search box will not function.
++ Setting a maximum value for the y-axis of the expression plot using the max_y_axis field. 
+    + This allows for comparison of gene expression between genes on a comparable scale.
++ Saving the currently selected genes using the Save Data dropdown. 
+    + From here, **you can also choose to save the entire table.**
++ Saving the summary plot or expression plot in either PNG or SVG formats, using the "Save Data" dropdown.
+
+
+```{r interactive1, echo = FALSE, eval = TRUE}
+
+i <- 2
+
+#annot <- data.frame(results.out0[,c(2:3, 7)])
+glimmaMA(fit0, d.filt, counts = e$E, transform.counts = "none",
+         groups =d.filt$samples$Trt, coef = i,
+         status  = rawPcodes, main = colnames(rawPcodes)[i],
+)
+         #anno = annot)
+
+glimmaMA(fit0, d.filt, counts = e$E, transform.counts = "none",
+         groups =d.filt$samples$Trt, coef = i,
+         status  = rawPcodes, main = colnames(rawPcodes)[i],
+         html = "WholeBrain_rawP05.html")
+
+
+```
+
+
+
+
+
+## Remove Unwanted Variation (RUV) Analysis
+
+### Iterative RUV
+
+"Remove Unwanted Variation"[^ruvseq] (RUV) is a method to estimate extra factors that can be added to the statistical model as you would known co-variates like age or weight, assuming that these extra factors are spurious technical variation in the samples and not biologically related. [Peixoto et al. (2015)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4652761/)[^iterRUV] show that extra normalization using RUV is often necessary in RNA-Seq experiments and helps to improve biological insights. They recommend to iteratively increase the number of factors until certain metrics become satisfactory. I counted the number of genes with raw p-value < 0.05 with increasing numbers of RUV factors (Figure 6). The number of genes increased across 2,3, and 4 RUV factors but the rate of increase slows between 4 and 5 and plateaus after 5. With only 10 samples I wanted to keep the number of RUV factors lower so I picked 4. The estimated RUV factor values for each sample are in the file  "SampleInfo_RUVvariables_WholeBrain_2022-05-12.csv". 
+
+```{r Figure 6, fig.cap = "Figure 6. Number of genes with oneway ANOVA FDR p-value < 0.05 using increasing numbers of RUV factors in the statistical model", echo = F, message=FALSE, fig.width = 5, fig.height = 5}
+
+ggplot(data=num0.05, aes(x=NumberOfFactors, y=NumberSig05, group=1)) +
+  geom_line(linetype = "dashed", size = 1)+
+  geom_point(size = 3) +
+  xlab("Number of RUV factors") + ylab("Number of genes")
+  
+
+```
+
+
+
+### Clustering after RUV removal
+
+We can remove the effects of these extra factors from the normalized expression values in order to visualize the improvement in sample clustering (Figure 7). Dimension 1 mostly separates Veh from Flu samples and explains `r plot.values4$var.exp[1]`% of the variation in expression in the top 5,000 most variable genes. A stand-alone interactive version of this plot is in file "MDSclustering_WholeBrain_RUVremoved.html"
+
+
+```{r Figure 7, fig.cap = "Figure 7. Multidimensional Scaling on the top 5,000 most variable genes after removing the effects of 4 RUV factors", echo = F, message=FALSE, fig.width = 7, fig.height = 6}
+ggplot(plot.values4, aes(Dim1, Dim2, color = Trt))+
+  geom_point(aes(fill = Trt),  size = 4)+theme_bw()+
+  xlab(paste0("Dimension 1 ","(",plot.values4$var.exp[1],"%)")) +
+  ylab(paste0("Dimension 2 ","(",plot.values4$var.exp[2],"%)")) +
+#  geom_text(aes(label = Rep),hjust=0.5, vjust=-0.6) +  xlim(-0.5, 0.3) +
+  scale_color_manual(values = dittoSeq::dittoColors()[1:4])
+
+glimmaMDS(wobj_final$normalizedCounts, top = 5000, labels = d$samples$Label,
+          groups = d.filt$samples, html = "MDSclustering_WholeBrain_RUVremoved.html")
+
+
+
+```
+
+
+
+
+## Differential gene expression analysis - RUV
+
+Differential gene expression (DE) analysis was performed using the limma-trend method[^trend1] using a model of ~ treatment + 4 RUV factors. The same pairwise comparison was pulled from the model and FDR correction done. Now the lowest FDR p-value for any gene was `r min(results.out$adj.P.Val)` and `r sum(results.out$adj.P.Val < 0.05)` genes had FDR p-value < 0.05. We can further increase the number of genes to examine by increasing the FDR threshold to 0.1, which yields `r sum(codes_fdr0.1_ruv[,1] == 1)` genes with higher expression in Flu vs. Veh and `r sum(codes_fdr0.1_ruv[,1] == -1)` genes with lower expression in Flu vs. Veh. These genes are visualized in a heatmap (Figure 8). 
+
+
+```{r Figure 8, fig.cap = "Figure 8. Heatmap of 2338 genes with onweay ANOVA FDR p-value < 0.1", echo = F, message=FALSE, fig.width = 10, fig.height = 10, cache = TRUE}
+
+heatmap.2(heat.h2, col=col.pan, Rowv=as.dendrogram(x.cluster.h2),Colv=FALSE, scale="none",
+          trace="none", dendrogram="row", cexRow=0.9, cexCol=1.5, labRow = "",
+          keysize = 0.2,lwid = c(1.4,4), lhei = c(1,4), key.par=list(mar = c(4,2,2,1)),
+          margins = c(9,2),density.info = "none", key.xlab = "SD from mean",
+          colsep =c(4), sepcolor="black",
+          sepwidth=c(0.05,0.05))
+
+
+
+```
+
+
+### Interactive results - RUV
+
+Below is an interactive version of the Flu vs. Veh results using RUV factors. A stand-alone interactive .html file is also in the main output directory. There is also non stand-alone .html files of similar interactive results available in the "interactive_plots" directory. This is an older version that are better in a few ways (quicker switching to top right plot and auto-scaling its y-axis) but do not contain all of the functionality of the newer interactive plots. In the old version the **AdjPValue** column actually gives the raw p-values whereas both raw and FDR corrected p-values are in the new versions. 
+
+
+
+```{r interactive2, echo = FALSE, eval = TRUE}
+
+i <- 1
+
+#annot <- data.frame(results.out0[,c(2:3, 7)])
+glimmaMA(fit.ruv4b, d.filt, counts = wobj_final$normalizedCounts, 
+         transform.counts = "none",
+         groups =d.filt$samples$Trt, coef = i,
+         status  = codes_fdr0.1_ruv, 
+         main = paste(colnames(codes_fdr0.1_ruv)[i], "RUV"),
+)
+         #anno = annot)
+
+glimmaMA(fit.ruv4b, d.filt, counts = wobj_final$normalizedCounts, 
+         transform.counts = "none",
+         groups =d.filt$samples$Trt, coef = i,
+         status  = codes_fdr0.1_ruv, 
+         main = paste(colnames(codes_fdr0.1_ruv)[i], "RUV"),
+         html = "WholeBrain_RUV_FDR0.1.html")
+
+
+```
+
+
+
+
+
+## Hardware and software descriptions
+The read quality check and count generation was done using CNRG's [*Biocluster* high-performance computing resource](http://biocluster.igb.illinois.edu/). All analyses from summation of counts to the gene level (including the codes in .Rmd file) were done on a laptop in `r R.Version()$version.string`[^R] using packages as indicated below.
+
+
+## R and package versions
+
+```{r}
+sessionInfo()
+```
+
+
+
+## References
+
+[^R]: R Core Team (2017). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL https://www.R-project.org/.
+
+[^tmm]: Robinson MD, Oshlack A (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25.
+
+[^limma]: Ritchie, M.E., Phipson, B., Wu, D., Hu, Y., Law, C.W., Shi, W., and Smyth, G.K. (2015). limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic Acids Research 43(7), e47.
+
+[^voom]: Law CW, Chen Y, Shi W, et al.: voom: Precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biol. 2014; 15(2): R29
+
+[^fdr]: Benjamini, Y., & Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. Journal of the Royal statistical society: series B (Methodological), 57(1), 289-300.
+
+[^voom]: Law, C. W., Chen, Y., Shi, W., & Smyth, G. K. (2014). voom: Precision weights unlock linear model analysis tools for RNA-seq read counts. Genome biology, 15(2), R29.
+
+[^treat]: McCarthy, D. J., & Smyth, G. K. (2009). Testing significance relative to a fold-change threshold is a TREAT. Bioinformatics, 25(6), 765-771.
+
+[^annohub]: Carlson M (2019). org.Gg.eg.db: Genome wide annotation for Mouse. R package version 3.8.2.
+
+[^bowtie2]: Langmead B, Salzberg S. Fast gapped-read alignment with Bowtie 2. Nature Methods. 2012, 9:357-359.
+
+[^trimmomatic]: Bolger, A. M., Lohse, M., & Usadel, B. (2014). Trimmomatic: a flexible trimmer for Illumina sequence data. Bioinformatics, 30(15), 2114-2120.
+
+[^trend1]: Chen Y, Lun ATL and Smyth GK. From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline [version 2; referees: 5 approved]. F1000Research 2016, 5:1438 (doi: 10.12688/f1000research.8987.2)
+
+[^tximport]: Soneson C, Love MI, Robinson MD (2015). "Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences." F1000Research, 4. doi: 10.12688/f1000research.7563.1.
+
+[^salmon]: Patro, R., Duggal, G., Love, M. I., Irizarry, R. A., & Kingsford, C. (2017). Salmon provides fast and bias-aware quantification of transcript expression. Nature methods, 14(4), 417.
+
+[^fastqc]: Andrews, S. (2010). FastQC: a quality control tool for high throughput sequence data. Available at: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/
+
+[^multiqc]: Ewels, P., Magnusson, M., Lundin, S., & K?ller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics, 32(19), 3047-3048.
+
+[^sva]: Leek JT, Johnson WE, Parker HS, Fertig EJ, Jaffe AE, Storey JD, Zhang Y, Torres LC (2019). sva: Surrogate Variable Analysis. R package version 3.32.0.
+
+[^bioc]: Huber W., Carey V.J., Gentleman R., ..., Morgan M. Orchestrating high-throughput genomic analysis with Bioconductor. Nature Methods, 2015:12, 115.
+
+[^edger1]: McCarthy DJ, Chen Y, Smyth GK (2012). "Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation." Nucleic Acids Research, 40(10), 4288-4297.
+
+[^edger2]: Robinson MD, McCarthy DJ, Smyth GK (2010). "edgeR: a Bioconductor package for differential expression analysis of digital gene expression data." Bioinformatics, 26(1), 139-140.
+
+[^edger3]: Chen Y, Lun ATL and Smyth GK. From reads to genes to pathways: differential expression analysis of RNA-Seq experiments using Rsubread and the edgeR quasi-likelihood pipeline [version 2; peer review: 5 approved]. F1000Research 2016, 5:1438 (https://doi.org/10.12688/f1000research.8987.2)
+
+[^ruvseq]: Risso D, Ngai J, Speed T, Dudoit S (2014). "Normalization of RNA-seq data using factor analysis of control genes or samples." Nature Biotechnology, 32(9), 896-902.
+
+[^star]: Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR. STAR: ultrafast universal RNA-seq aligner. Bioinformatics. 2013 Jan 1;29(1):15-21. doi: 10.1093/bioinformatics/bts635. Epub 2012 Oct 25. PMID: 23104886; PMCID: PMC3530905.
+
+[^fc]: Liao Y, Smyth GK and Shi W. featureCounts: an efficient general-purpose program for assigning sequence reads to genomic features. Bioinformatics, 30(7):923-30, 2014.
+
+[^wgcna1]: Bin Zhang and Steve Horvath (2005) A General Framework for Weighted Gene Co-Expression Network Analysis. Statistical Applications in Genetics and Molecular Biology: Vol. 4: No. 1, Article 17 PMID: 16646834
+
+[^wgcna2]: Horvath, S. (2008). WGCNA: an R package for weighted correlation network analysis. BMC Bioinformatics., 9(1), 559. https://doi.org/10.1186/1471-2105-9-559
+
+[^iterRUV]: Peixoto, L., Risso, D., Poplawski, S. G., Wimmer, M. E., Speed, T. P., Wood, M. A., & Abel, T. (2015). How data analysis affects power, reproducibility and biological insight of RNA-seq studies in complex datasets. Nucleic acids research, 43(16), 7664–7674. https://doi.org/10.1093/nar/gkv736
