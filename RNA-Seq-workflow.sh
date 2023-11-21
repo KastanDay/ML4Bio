@@ -12,6 +12,8 @@ done
 multiqc .
 
 # Step 3: STAR alignment
+STAR --runThreadN 4 --genomeDir /path/to/genomeDir --readFilesIn file1.fastq.gz file2.fastq.gz --readFilesCommand zcat --outFileNamePrefix star_ --outSAMtype BAM SortedByCoordinate
+
 # Step 4: RSEM quantification
 # Step 5: Samtools sorting and indexing
 # Step 6: DESeq2 analysis
