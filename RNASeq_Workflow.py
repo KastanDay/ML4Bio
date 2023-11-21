@@ -21,9 +21,10 @@ def run_rsem():
     command = 'rsem-calculate-expression --paired-end --alignments -p 4 ./star_output/Aligned.toTranscriptome.out.bam /path/to/reference ./rsem_output/'
     subprocess.run(command, shell=True)
 
-# Placeholder for DESeq2 function
+# Function to run DESeq2
 def run_deseq2():
-    pass
+    command = 'Rscript DESeq2.R'
+    subprocess.run(command, shell=True)
 
 if __name__ == '__main__':
     run_fastqc()
