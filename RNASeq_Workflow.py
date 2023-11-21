@@ -11,9 +11,10 @@ def run_multiqc():
     command = 'multiqc ./fastqc_output/ -o ./multiqc_output/'
     subprocess.run(command, shell=True)
 
-# Placeholder for STAR function
+# Function to run STAR
 def run_star():
-    pass
+    command = 'STAR --runThreadN 4 --genomeDir /path/to/genomeDir --readFilesIn file1.fastq.gz file2.fastq.gz --readFilesCommand zcat --outFileNamePrefix ./star_output/'
+    subprocess.run(command, shell=True)
 
 # Placeholder for RSEM function
 def run_rsem():
