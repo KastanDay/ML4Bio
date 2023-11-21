@@ -18,4 +18,7 @@ STAR --runThreadN 4 --genomeDir /path/to/genomeDir --readFilesIn file1.fastq.gz 
 rsem-calculate-expression --paired-end --alignments -p 4 star_Aligned.toTranscriptome.out.bam /path/to/rsem_index_prefix rsem_
 
 # Step 5: Samtools sorting and indexing
+samtools sort -@ 4 -o sorted.bam star_Aligned.sortedByCoord.out.bam
+samtools index sorted.bam
+
 # Step 6: DESeq2 analysis
