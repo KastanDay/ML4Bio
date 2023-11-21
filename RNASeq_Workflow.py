@@ -6,9 +6,10 @@ def run_fastqc():
     command = 'fastqc *.fastq.gz -o ./fastqc_output/'
     subprocess.run(command, shell=True)
 
-# Placeholder for MultiQC function
+# Function to run MultiQC
 def run_multiqc():
-    pass
+    command = 'multiqc ./fastqc_output/ -o ./multiqc_output/'
+    subprocess.run(command, shell=True)
 
 # Placeholder for STAR function
 def run_star():
