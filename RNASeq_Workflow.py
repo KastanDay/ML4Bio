@@ -1,9 +1,10 @@
 import os
 import subprocess
 
-# Placeholder for FastQC function
+# Function to run FastQC
 def run_fastqc():
-    pass
+    command = 'fastqc *.fastq.gz -o ./fastqc_output/'
+    subprocess.run(command, shell=True)
 
 # Placeholder for MultiQC function
 def run_multiqc():
