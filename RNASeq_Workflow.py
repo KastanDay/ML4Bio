@@ -16,9 +16,10 @@ def run_star():
     command = 'STAR --runThreadN 4 --genomeDir /path/to/genomeDir --readFilesIn file1.fastq.gz file2.fastq.gz --readFilesCommand zcat --outFileNamePrefix ./star_output/'
     subprocess.run(command, shell=True)
 
-# Placeholder for RSEM function
+# Function to run RSEM
 def run_rsem():
-    pass
+    command = 'rsem-calculate-expression --paired-end --alignments -p 4 ./star_output/Aligned.toTranscriptome.out.bam /path/to/reference ./rsem_output/'
+    subprocess.run(command, shell=True)
 
 # Placeholder for DESeq2 function
 def run_deseq2():
