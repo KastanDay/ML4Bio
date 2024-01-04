@@ -1,0 +1,3280 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<MINiML
+   xmlns="http://www.ncbi.nlm.nih.gov/geo/info/MINiML"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.ncbi.nlm.nih.gov/geo/info/MINiML http://www.ncbi.nlm.nih.gov/geo/info/MINiML.xsd"
+   version="0.5.0" >
+
+  <Contributor iid="contrib1">
+    <Person><First>Andrew</First><Middle>J</Middle><Last>Steelman</Last></Person>
+    <Email>asteelma@illinois.edu</Email>
+    <Phone>(217) 244-4277</Phone>
+    <Organization>University of Illinois</Organization>
+    <Address>
+      <Line>1201 West Gregory</Line>
+      <City>Urbana</City>
+      <State>IL</State>
+      <Zip-Code>61821</Zip-Code>
+      <Country>USA</Country>
+    </Address>
+  </Contributor>
+
+  <Contributor iid="contrib2">
+    <Organization>GEO</Organization>
+    <Address>
+      <City></City>
+      <Country>USA</Country>
+    </Address>
+  </Contributor>
+
+  <Database iid="GEO">
+    <Name>Gene Expression Omnibus (GEO)</Name>
+    <Public-ID>GEO</Public-ID>
+    <Organization>NCBI NLM NIH</Organization>
+    <Web-Link>http://www.ncbi.nlm.nih.gov/geo</Web-Link>
+    <Email>geo@ncbi.nlm.nih.gov</Email>
+  </Database>
+
+  <Platform iid="GPL17021">
+    <Status database="GEO">
+      <Submission-Date>2013-04-16</Submission-Date>
+      <Release-Date>2013-04-16</Release-Date>
+      <Last-Update-Date>2019-03-21</Last-Update-Date>
+    </Status>
+    <Title>Illumina HiSeq 2500 (Mus musculus)</Title>
+    <Accession database="GEO">GPL17021</Accession>
+    <Technology>high-throughput sequencing</Technology>
+    <Distribution>virtual</Distribution>
+    <Organism taxid="10090">Mus musculus</Organism>
+    <Manufacturer></Manufacturer>
+    <Manufacture-Protocol>
+    </Manufacture-Protocol>
+    <Contact-Ref ref="contrib2" />
+  </Platform>
+
+  <Sample iid="GSM2545336">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_10C</Title>
+    <Accession database="GEO">GSM2545336</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+14
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545336/suppl/GSM2545336_10C_CTGAAGCT-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624258" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659760" />
+  </Sample>
+
+  <Sample iid="GSM2545337">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_11C</Title>
+    <Accession database="GEO">GSM2545337</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+9
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545337/suppl/GSM2545337_11C_TAATGCGC-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624306" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659761" />
+  </Sample>
+
+  <Sample iid="GSM2545338">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_12C</Title>
+    <Accession database="GEO">GSM2545338</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+10
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-ATAGAGGC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545338/suppl/GSM2545338_12C_TAATGCGC-ATAGAGGC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624254" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659762" />
+  </Sample>
+
+  <Sample iid="GSM2545339">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_13C</Title>
+    <Accession database="GEO">GSM2545339</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+15
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545339/suppl/GSM2545339_13C_TAATGCGC-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624255" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659763" />
+  </Sample>
+
+  <Sample iid="GSM2545340">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_14C</Title>
+    <Accession database="GEO">GSM2545340</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+18
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545340/suppl/GSM2545340_14C_TAATGCGC-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624256" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659764" />
+  </Sample>
+
+  <Sample iid="GSM2545341">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_17C</Title>
+    <Accession database="GEO">GSM2545341</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+6
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545341/suppl/GSM2545341_17C_TAATGCGC-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624259" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659765" />
+  </Sample>
+
+  <Sample iid="GSM2545342">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_1C</Title>
+    <Accession database="GEO">GSM2545342</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+5
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545342/suppl/GSM2545342_1C_CTGAAGCT-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624257" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659766" />
+  </Sample>
+
+  <Sample iid="GSM2545343">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_20C</Title>
+    <Accession database="GEO">GSM2545343</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+11
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TAATGCGC-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545343/suppl/GSM2545343_20C_TAATGCGC-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624301" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659767" />
+  </Sample>
+
+  <Sample iid="GSM2545344">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_21C</Title>
+    <Accession database="GEO">GSM2545344</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+22
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545344/suppl/GSM2545344_21C_CGGCTATG-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624261" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659768" />
+  </Sample>
+
+  <Sample iid="GSM2545345">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_22C</Title>
+    <Accession database="GEO">GSM2545345</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+13
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-ATAGAGGC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545345/suppl/GSM2545345_22C_CGGCTATG-ATAGAGGC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624260" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659769" />
+  </Sample>
+
+  <Sample iid="GSM2545346">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_25C</Title>
+    <Accession database="GEO">GSM2545346</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+23
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545346/suppl/GSM2545346_25C_CGGCTATG-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624262" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659770" />
+  </Sample>
+
+  <Sample iid="GSM2545347">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_26C</Title>
+    <Accession database="GEO">GSM2545347</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+24
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545347/suppl/GSM2545347_26C_CGGCTATG-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624298" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659771" />
+  </Sample>
+
+  <Sample iid="GSM2545348">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_27C</Title>
+    <Accession database="GEO">GSM2545348</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+8
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545348/suppl/GSM2545348_27C_CGGCTATG-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624299" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659772" />
+  </Sample>
+
+  <Sample iid="GSM2545349">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_28C</Title>
+    <Accession database="GEO">GSM2545349</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+7
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-TAATCTTA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545349/suppl/GSM2545349_28C_CGGCTATG-TAATCTTA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624300" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659773" />
+  </Sample>
+
+  <Sample iid="GSM2545350">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_29C</Title>
+    <Accession database="GEO">GSM2545350</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+1
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-CAGGACGT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545350/suppl/GSM2545350_29C_CGGCTATG-CAGGACGT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624296" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659774" />
+  </Sample>
+
+  <Sample iid="GSM2545351">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_2C</Title>
+    <Accession database="GEO">GSM2545351</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+16
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-ATAGAGGC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545351/suppl/GSM2545351_2C_CTGAAGCT-ATAGAGGC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624297" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659775" />
+  </Sample>
+
+  <Sample iid="GSM2545352">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_30C</Title>
+    <Accession database="GEO">GSM2545352</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+21
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CGGCTATG-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545352/suppl/GSM2545352_30C_CGGCTATG-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624286" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659776" />
+  </Sample>
+
+  <Sample iid="GSM2545353">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_3C</Title>
+    <Accession database="GEO">GSM2545353</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+4
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545353/suppl/GSM2545353_3C_CTGAAGCT-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624287" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659777" />
+  </Sample>
+
+  <Sample iid="GSM2545354">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_4C</Title>
+    <Accession database="GEO">GSM2545354</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+2
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545354/suppl/GSM2545354_4C_CTGAAGCT-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624294" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659778" />
+  </Sample>
+
+  <Sample iid="GSM2545355">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_571</Title>
+    <Accession database="GEO">GSM2545355</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+1
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-CAGGACGT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545355/suppl/GSM2545355_571_AGCGATAG-CAGGACGT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624292" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659779" />
+  </Sample>
+
+  <Sample iid="GSM2545356">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_574</Title>
+    <Accession database="GEO">GSM2545356</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+2
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545356/suppl/GSM2545356_574_TCCGCGAA-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624290" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659780" />
+  </Sample>
+
+  <Sample iid="GSM2545357">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_575</Title>
+    <Accession database="GEO">GSM2545357</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+3
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-CAGGACGT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545357/suppl/GSM2545357_575_TCTCGCGC-CAGGACGT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624289" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659781" />
+  </Sample>
+
+  <Sample iid="GSM2545358">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_583</Title>
+    <Accession database="GEO">GSM2545358</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+4
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545358/suppl/GSM2545358_583_TCCGCGAA-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624283" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659782" />
+  </Sample>
+
+  <Sample iid="GSM2545359">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_585</Title>
+    <Accession database="GEO">GSM2545359</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+5
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545359/suppl/GSM2545359_585_TCCGCGAA-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624282" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659783" />
+  </Sample>
+
+  <Sample iid="GSM2545360">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_589</Title>
+    <Accession database="GEO">GSM2545360</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+6
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545360/suppl/GSM2545360_589_TCTCGCGC-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624280" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659784" />
+  </Sample>
+
+  <Sample iid="GSM2545361">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_590</Title>
+    <Accession database="GEO">GSM2545361</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+7
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-TAATCTTA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545361/suppl/GSM2545361_590_AGCGATAG-TAATCTTA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624278" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659785" />
+  </Sample>
+
+  <Sample iid="GSM2545362">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_5C</Title>
+    <Accession database="GEO">GSM2545362</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+20
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545362/suppl/GSM2545362_5C_CTGAAGCT-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624277" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659786" />
+  </Sample>
+
+  <Sample iid="GSM2545363">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_6C</Title>
+    <Accession database="GEO">GSM2545363</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+12
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-TAATCTTA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545363/suppl/GSM2545363_6C_CTGAAGCT-TAATCTTA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624276" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659787" />
+  </Sample>
+
+  <Sample iid="GSM2545364">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_709</Title>
+    <Accession database="GEO">GSM2545364</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+8
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545364/suppl/GSM2545364_709_AGCGATAG-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624275" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659788" />
+  </Sample>
+
+  <Sample iid="GSM2545365">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_710</Title>
+    <Accession database="GEO">GSM2545365</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+9
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545365/suppl/GSM2545365_710_TCTCGCGC-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624274" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659789" />
+  </Sample>
+
+  <Sample iid="GSM2545366">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_711</Title>
+    <Accession database="GEO">GSM2545366</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 0 (Non-Infected)</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+10
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-ATAGAGGC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545366/suppl/GSM2545366_711_TCTCGCGC-ATAGAGGC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624273" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659790" />
+  </Sample>
+
+  <Sample iid="GSM2545367">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_713</Title>
+    <Accession database="GEO">GSM2545367</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Non-Infected
+      </Characteristics>
+      <Characteristics tag="time">
+Day 0
+      </Characteristics>
+      <Characteristics tag="mouse id">
+11
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545367/suppl/GSM2545367_713_TCTCGCGC-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624272" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659791" />
+  </Sample>
+
+  <Sample iid="GSM2545368">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_728</Title>
+    <Accession database="GEO">GSM2545368</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+12
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-TAATCTTA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545368/suppl/GSM2545368_728_TCCGCGAA-TAATCTTA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624271" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659792" />
+  </Sample>
+
+  <Sample iid="GSM2545369">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_729</Title>
+    <Accession database="GEO">GSM2545369</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+13
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-ATAGAGGC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545369/suppl/GSM2545369_729_AGCGATAG-ATAGAGGC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624270" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659793" />
+  </Sample>
+
+  <Sample iid="GSM2545370">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_730</Title>
+    <Accession database="GEO">GSM2545370</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+14
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545370/suppl/GSM2545370_730_TCCGCGAA-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624269" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659794" />
+  </Sample>
+
+  <Sample iid="GSM2545371">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_731</Title>
+    <Accession database="GEO">GSM2545371</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+15
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545371/suppl/GSM2545371_731_TCTCGCGC-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624268" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659795" />
+  </Sample>
+
+  <Sample iid="GSM2545372">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_733</Title>
+    <Accession database="GEO">GSM2545372</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+17
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-TAATCTTA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545372/suppl/GSM2545372_733_TCTCGCGC-TAATCTTA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624267" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659796" />
+  </Sample>
+
+  <Sample iid="GSM2545373">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_735</Title>
+    <Accession database="GEO">GSM2545373</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+18
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCTCGCGC-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545373/suppl/GSM2545373_735_TCTCGCGC-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624266" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659797" />
+  </Sample>
+
+  <Sample iid="GSM2545374">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_736</Title>
+    <Accession database="GEO">GSM2545374</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+19
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-CAGGACGT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545374/suppl/GSM2545374_736_TCCGCGAA-CAGGACGT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624265" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659798" />
+  </Sample>
+
+  <Sample iid="GSM2545375">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_738</Title>
+    <Accession database="GEO">GSM2545375</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+20
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: TCCGCGAA-AGGCGAAG
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545375/suppl/GSM2545375_738_TCCGCGAA-AGGCGAAG_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624264" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659799" />
+  </Sample>
+
+  <Sample iid="GSM2545376">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_740</Title>
+    <Accession database="GEO">GSM2545376</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+21
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-GTACTGAC
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545376/suppl/GSM2545376_740_AGCGATAG-GTACTGAC_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624263" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659800" />
+  </Sample>
+
+  <Sample iid="GSM2545377">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_741</Title>
+    <Accession database="GEO">GSM2545377</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 4</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 4
+      </Characteristics>
+      <Characteristics tag="mouse id">
+22
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-TATAGCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545377/suppl/GSM2545377_741_AGCGATAG-TATAGCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624305" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659801" />
+  </Sample>
+
+  <Sample iid="GSM2545378">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_742</Title>
+    <Accession database="GEO">GSM2545378</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+23
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-CCTATCCT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545378/suppl/GSM2545378_742_AGCGATAG-CCTATCCT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624304" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659802" />
+  </Sample>
+
+  <Sample iid="GSM2545379">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_743</Title>
+    <Accession database="GEO">GSM2545379</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Spinal cord, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Male
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+24
+      </Characteristics>
+      <Characteristics tag="tissue">
+Spinal cord
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: AGCGATAG-GGCTCTGA
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545379/suppl/GSM2545379_743_AGCGATAG-GGCTCTGA_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624303" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659803" />
+  </Sample>
+
+  <Sample iid="GSM2545380">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2021-02-09</Last-Update-Date>
+    </Status>
+    <Title>CNS_RNA-seq_9C</Title>
+    <Accession database="GEO">GSM2545380</Accession>
+    <Type>SRA</Type>
+    <Channel-Count>1</Channel-Count>
+    <Channel position="1">
+      <Source>Cerebellum, Day 8</Source>
+      <Organism taxid="10090">Mus musculus</Organism>
+      <Characteristics tag="strain">
+C57BL/6
+      </Characteristics>
+      <Characteristics tag="age">
+8 weeks
+      </Characteristics>
+      <Characteristics tag="gender">
+Female
+      </Characteristics>
+      <Characteristics tag="infection">
+Influenza A
+      </Characteristics>
+      <Characteristics tag="time">
+Day 8
+      </Characteristics>
+      <Characteristics tag="mouse id">
+19
+      </Characteristics>
+      <Characteristics tag="tissue">
+Cerebellum
+      </Characteristics>
+      <Treatment-Protocol>
+Mice were anesthetized with isoflurane then inoculated with saline (D0) or influenza A virus (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route.  The total innoculation volume was 0.05ml.
+      </Treatment-Protocol>
+      <Molecule>total RNA</Molecule>
+      <Extract-Protocol>
+Mice were anethetized with ketamine and xylazine then perfused with sterile phosphate buffered saline (PBS).  The cerebellum and spinal cords were dissected and flash frozen in liquid nitrogen.  RNA was extracted using Tri reagent, then further purified using GeneJet RNA purification kit and DNAse digestion.
+The strand-specific RNAseq libraries were prepared with Illumina's 'TruSeq Stranded RNA Sample Prep kit'. Adaptors must be remove. Sequence of adaptor for read1: AGATCGGAAGAGCACACGTCTGAACTCCAGTCACNNNNNNATCTCGTATGCCGTCTTCTGCTTG  (NNNNNN= 6 nt index). Sequence of adaptor for read2: AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTAGATCTCGGTGGTCGCCGTATCAT
+      </Extract-Protocol>
+    </Channel>
+    <Description>
+Barcode: CTGAAGCT-CAGGACGT
+    </Description>
+    <Data-Processing>
+The libraries were pooled in equimolar concentration and the pool was quantitated by qPCR and sequenced on one lane for 101 cycles on a HiSeq2500 using a HiSeq SBS sequencing kit version 3.
+Fastq files were generated and demultiplexed with with the bcl2fastq v1.8.4 Conversion Software (Illumina)
+Each sample's fastq file run through trimmomatic 0.33 to first remove any remaining standard Illumina TruSeq SE v3 adapters, then trim bases from both ends with quality scores below 28, and finally to remove reads shorter than 30 bp (parameters ILLUMINACLIP:/home/apps/trimmomatic/trimmomatic-0.33/adapters/TruSeq3-SE.fa:2:15:10 LEADING:28 TRAILING:28 MINLEN:30)
+NCBI's GRCm38.p3 genome was indexed using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameters --sjdbOverhang 99 and --sjdbGTFtagExonParentGene gene. Each sample was then aligned to the genome again using STAR 2.4.2a with gene models ref_GRCm38.p3_top_level.gff3.gz (NCBI Mus musculus Annotation Release 105) and parameter --sjdbGTFtagExonParentGene gene.
+Read counts for each gene were generated using featureCounts (from subread v 1.4.6-p4) with parameters -s 2 -g gene -t exon
+Genome_build: NCBI GRCm38.p3
+Supplementary_files_format_and_content: tab-delimited text files of raw read counts per gene per sample were used directly in edgeR 3.12.0 for statistical analysis and thus are the &quot;normalized&quot; data.
+    </Data-Processing>
+    <Platform-Ref ref="GPL17021" />
+    <Library-Strategy>RNA-Seq</Library-Strategy>
+    <Library-Source>transcriptomic</Library-Source>
+    <Library-Selection>cDNA</Library-Selection>
+    <Instrument-Model>
+      <Predefined>Illumina HiSeq 2500</Predefined>
+    </Instrument-Model>
+    <Contact-Ref ref="contrib1" />
+    <Supplementary-Data type="TXT">
+ftp://ftp.ncbi.nlm.nih.gov/geo/samples/GSM2545nnn/GSM2545380/suppl/GSM2545380_9C_CTGAAGCT-CAGGACGT_L00M_featCounts.txt.gz
+    </Supplementary-Data>
+    <Relation type="BioSample" target="https://www.ncbi.nlm.nih.gov/biosample/SAMN06624302" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRX2659804" />
+  </Sample>
+
+  <Series iid="GSE96870">
+    <Status database="GEO">
+      <Submission-Date>2017-03-21</Submission-Date>
+      <Release-Date>2017-06-14</Release-Date>
+      <Last-Update-Date>2023-09-14</Last-Update-Date>
+    </Status>
+    <Title>The effect of upper-respiratory infection on transcriptomic changes in the CNS</Title>
+    <Accession database="GEO">GSE96870</Accession>
+    <Pubmed-ID>28696309</Pubmed-ID>
+    <Pubmed-ID>37596606</Pubmed-ID>
+    <Summary>
+Purpose:  The goal of this study was to determine the effect of an upper-respiratory infection on changes in RNA transcription occuring in the cerebellum and spinal cord. post infection.
+Methods:  Gender matched eight week old C57BL/6 mice were inoculated saline or with Influenza A (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route and transcriptomic changes in the cerebellum and spinal cord tissues were evaluated by RNA-seq (100bp paired end reads) at days 0 (non-infected), 4 and 8
+Results:  After trimming and excluding multi-mappeing reads an average of 92.07% (cerebellum) and 91.71% (spinal cord) of genes were uniquely mapped to a gene.  The average number of single end reads per sample was 36.42 and 37 million for the spinal cord and cerebellum respectively. Infection caused significant changes to the transcriptome of each tissue, which was most prominent at day 8 post infection.
+Conclusion:  This study represents the first to use RNA-seq tecnology to evaluate the effect of peripheral influenza a infection on changes in gene expression of the cerebellum and spinal cord.
+    </Summary>
+    <Overall-Design>
+Gender matched eight week old C57BL/6 mice were inoculated saline or with Influenza A (Puerto Rico/8/34; PR8, 1.0 HAU) by intranasal route and transcriptomic changes in the cerebellum and spinal cord tissues were evaluated by RNA-seq (100bp paired end reads) at days 0 (non-infected), 4 and 8
+    </Overall-Design>
+    <Type>Expression profiling by high throughput sequencing</Type>
+    <Contributor-Ref ref="contrib1" position="1" />
+    <Contact-Ref ref="contrib1" />
+    <Sample-Ref ref="GSM2545336" />
+    <Sample-Ref ref="GSM2545337" />
+    <Sample-Ref ref="GSM2545338" />
+    <Sample-Ref ref="GSM2545339" />
+    <Sample-Ref ref="GSM2545340" />
+    <Sample-Ref ref="GSM2545341" />
+    <Sample-Ref ref="GSM2545342" />
+    <Sample-Ref ref="GSM2545343" />
+    <Sample-Ref ref="GSM2545344" />
+    <Sample-Ref ref="GSM2545345" />
+    <Sample-Ref ref="GSM2545346" />
+    <Sample-Ref ref="GSM2545347" />
+    <Sample-Ref ref="GSM2545348" />
+    <Sample-Ref ref="GSM2545349" />
+    <Sample-Ref ref="GSM2545350" />
+    <Sample-Ref ref="GSM2545351" />
+    <Sample-Ref ref="GSM2545352" />
+    <Sample-Ref ref="GSM2545353" />
+    <Sample-Ref ref="GSM2545354" />
+    <Sample-Ref ref="GSM2545355" />
+    <Sample-Ref ref="GSM2545356" />
+    <Sample-Ref ref="GSM2545357" />
+    <Sample-Ref ref="GSM2545358" />
+    <Sample-Ref ref="GSM2545359" />
+    <Sample-Ref ref="GSM2545360" />
+    <Sample-Ref ref="GSM2545361" />
+    <Sample-Ref ref="GSM2545362" />
+    <Sample-Ref ref="GSM2545363" />
+    <Sample-Ref ref="GSM2545364" />
+    <Sample-Ref ref="GSM2545365" />
+    <Sample-Ref ref="GSM2545366" />
+    <Sample-Ref ref="GSM2545367" />
+    <Sample-Ref ref="GSM2545368" />
+    <Sample-Ref ref="GSM2545369" />
+    <Sample-Ref ref="GSM2545370" />
+    <Sample-Ref ref="GSM2545371" />
+    <Sample-Ref ref="GSM2545372" />
+    <Sample-Ref ref="GSM2545373" />
+    <Sample-Ref ref="GSM2545374" />
+    <Sample-Ref ref="GSM2545375" />
+    <Sample-Ref ref="GSM2545376" />
+    <Sample-Ref ref="GSM2545377" />
+    <Sample-Ref ref="GSM2545378" />
+    <Sample-Ref ref="GSM2545379" />
+    <Sample-Ref ref="GSM2545380" />
+    <Supplementary-Data type="TAR">
+ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE96nnn/GSE96870/suppl/GSE96870_RAW.tar
+    </Supplementary-Data>
+    <Relation type="BioProject" target="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA379959" />
+    <Relation type="SRA" target="https://www.ncbi.nlm.nih.gov/sra?term=SRP102241" />
+  </Series>
+
+</MINiML>
