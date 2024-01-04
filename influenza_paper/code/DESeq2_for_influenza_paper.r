@@ -2,7 +2,7 @@ library(DESeq2)
 library(readr)
 
 # Read the featureCounts output file
-count_file <- "10C_CTGAAGCT-GTACTGAC_L00M__featCounts.txt"
+count_file <- "GSM2545336_10C_CTGAAGCT-GTACTGAC_L00M_featCounts.txt"
 # Skip the metadata lines and read only the count data. Adjust 'skip' as needed
 count_data <- read.table(count_file, header = TRUE, sep = "\t", skip = 1, check.names = FALSE)
 
