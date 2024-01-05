@@ -1,27 +1,27 @@
 library(DESeq2)
-library(readr)
 
-# Read the featureCounts output file
-count_file <- "GSM2545336_10C_CTGAAGCT-GTACTGAC_L00M_featCounts.txt"
-# Skip the metadata lines and read only the count data. Adjust 'skip' as needed
-count_data <- read.table(count_file, header = TRUE, sep = "\t", skip = 1, check.names = FALSE)
+# Step 1: Generate file paths
+file_paths <- list.files(path = "../data/raw_feat_counts", pattern = "_featCounts.txt", full.names = TRUE)
 
-# Column names adjustment: change the BAM file column name to something more readable
-colnames(count_data)[length(colnames(count_data))] <- "counts"
+# Function to read count data from a single file
+read_featureCounts <- function(file_path) {
+    counts <- read.table(file_path, header = TRUE, skip = 1, check.names = FALSE)
+    return(counts[,ncol(counts)])  # assuming count data is in the last column
+}
 
-# You will also need a separate metadata file that includes the sample information and the conditions
-# This file should have rows corresponding to the columns of the count_data
-# For this example, I'll create a dummy metadata dataframe
-# Replace this with reading your actual metadata file
-meta_data <- data.frame(
-  sampleName = "10C_CTGAAGCT-GTACTGAC_L00M",
-  condition = "conditionA" # replace with actual condition names
-)
+# Step 2: Read and combine count data
+all_counts <- sapply(file_paths, read_featureCounts)
+row.names(all_counts) <- read.table(file_paths[1], header = TRUE, skip = 1, check.names = FALSE)$Geneid
 
-# Prepare the data for DESeq2
-dds <- DESeqDataSetFromMatrix(countData = count_data[,7], colData = meta_data, design = ~ condition)
+# Step 3: Create metadata
+# Extract sample names from file names
+sample_names <- gsub(pattern = "(.*)_featCounts\\.txt", replacement = "\\1", basename(file_paths))
+# You need to provide the conditions for each sample
+conditions <- rep(c("Control", "Treatment"), length.out = length(sample_names))
+meta_data <- data.frame(sampleName = sample_names, condition = conditions)
 
-# Run DESeq2
+# Step 4: Run DESeq2 analysis
+dds <- DESeqDataSetFromMatrix(countData = all_counts, colData = meta_data, design = ~ condition)
 dds <- DESeq(dds)
 
 # Get the results
