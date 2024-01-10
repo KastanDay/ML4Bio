@@ -5,7 +5,7 @@ library(DESeq2)
 countData <- read.csv('rsem_output.genes.results', sep='\t', row.names=1)
 
 # Specify conditions
-condition <- factor(c('condition1', 'condition2'))
+condition <- factor(c('PBMC_condition1', 'PBMC_condition2'))
 
 # Create DESeqDataSet
 dds <- DESeqDataSetFromMatrix(countData = countData, colData = data.frame(condition), design = ~ condition)
